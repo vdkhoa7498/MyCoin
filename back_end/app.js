@@ -1,43 +1,59 @@
-express = require('express');
-morgan = require('morgan');
-require('express-async-errors');
-const cors = require('cors');
+const app = require('express')();
+const bodyParser = require('body-parser');
 require('dotenv').config();
+const httpServer = require('http').Server(app);
+const axios = require('axios');
+const io = require('socket.io')(httpServer);
+const client = require('socket.io-client');
 
-const app = express();
-const http = require("http");
-const server = http.createServer(app);
+const BlockChain = require('./models/chain.model');
+const SocketActions  = require('./constants');
 
-app.use(morgan('dev'));
-app.use(express.json())
+const socketListeners = require('./socket/socketListeners');
 
+const { PORT } = process.env;
+console.log(process.env.PORT)
 
-app.use('*', cors());
+const blockChain = new BlockChain(null, io);
 
-app.get('/', function(req,res){
-    res.json({
-        message: 'Hello vivi'
-    })
-})
+app.use(bodyParser.json());
 
-
-app.get('/err', function (req, res) {
-    throw new Error('Error!');
-  })
-  
-  app.use(function (req, res, next) {
-    res.status(404).json({
-      error_message: 'Endpoint not found'
+app.post('/nodes', (req, res) => {
+  const { host, port } = req.body;
+  const { callback } = req.query;
+  const node = `http://${host}:${port}`;
+  const socketNode = socketListeners(client(node), blockChain);
+  blockChain.addNode(socketNode, blockChain);
+  if (callback === 'true') {
+    console.info(`Added node ${node} back`);
+    res.json({ status: 'Added node Back' }).end();
+  } else {
+    axios.post(`${node}/nodes?callback=true`, {
+      host: req.hostname,
+      port: PORT,
     });
-  })
-  
-  app.use(function (err, req, res, next) {
-    console.error(err.stack);
-    res.status(500).json({
-      error_message: 'Something broke!'
-    });
-  })
+    console.info(`Added node ${node}`);
+    res.json({ status: 'Added node' }).end();
+  }
+});
 
+app.post('/transaction', (req, res) => {
+  const { sender, receiver, amount } = req.body;
+  io.emit(SocketActions.ADD_TRANSACTION, sender, receiver, amount);
+  res.json({ message: 'transaction success' }).end();
+});
 
-const port = process.env.PORT || 8000
-server.listen(port, () => console.log(`server is running at https://localhost${port}`));
+app.get('/chain', (req, res) => {
+  res.json(blockChain.toArray()).end();
+});
+
+io.on('connection', (socket) => {
+  console.info(`Socket connected, ID: ${socket.id}`);
+  socket.on('disconnect', () => {
+    console.log(`Socket disconnected, ID: ${socket.id}`);
+  });
+});
+
+blockChain.addNode(socketListeners(client(`http://localhost:${PORT}`), blockChain));
+
+httpServer.listen(PORT, () => console.info(`Express server running on ${PORT}...`));
