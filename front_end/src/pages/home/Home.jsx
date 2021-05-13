@@ -1,13 +1,17 @@
-const { default: CreateNewWallet } = require("../createNewWallet/CreateNewWallet")
-
+import { Button } from 'antd'
+import './styles.scss'
 
 const Home = () =>{
 
     return(
-        <>
-            <h2>Home</h2>
-            <CreateNewWallet/>
-        </>
+        <div className="home-container">
+            <div className="button-card">
+                Create A New Wallet
+            </div>
+            <div className="button-card">
+                Access My Wallet
+            </div>
+        </div>
         
     )
 }
