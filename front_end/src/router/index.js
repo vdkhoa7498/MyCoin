@@ -39,7 +39,7 @@ function RouterOutlet(props) {
     <Suspense fallback={null}>
       <Router>
         <Switch>
-          <Route exact path={["/", "create-new-wallet", "access-my-wallet"]}>
+          <Route exact path={["/", "/create-new-wallet", "/access-my-wallet"]}>
             <PrivateLayout>
               <Route exact path="/">
                 <Home/>

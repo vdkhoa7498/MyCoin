@@ -1,16 +1,23 @@
 import { Button } from 'antd'
+import { useHistory } from 'react-router-dom'
 import './styles.scss'
 
 const Home = () =>{
 
+    const history = useHistory()
+
     return(
         <div className="home-container">
-            <div className="button-card">
+            <Button type="primary" className="button-card" 
+                onClick={()=>{ history.push("/create-new-wallet")}}
+            >
                 Create A New Wallet
-            </div>
-            <div className="button-card">
+            </Button>
+            <Button type="ghost" className="button-card" 
+                onClick={()=>{ history.push("/access-my-wallet")}}
+            >
                 Access My Wallet
-            </div>
+            </Button>
         </div>
         
     )
