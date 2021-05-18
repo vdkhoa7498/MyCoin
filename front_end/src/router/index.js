@@ -8,6 +8,7 @@ import Home from '../pages/home/Home'
 import NotFound from '../pages/notFound/NotFound'
 import CreateNewWallet from '../pages/createNewWallet/CreateNewWallet';
 import AccessWallet from '../pages/accessWallet/AccessWallet'
+import TransactionHistory from '../pages/transactionHistory/TransactionHistory';
 
 const { Header, Content, Footer } = Layout;
 
@@ -39,7 +40,7 @@ function RouterOutlet(props) {
     <Suspense fallback={null}>
       <Router>
         <Switch>
-          <Route exact path={["/", "/create-new-wallet", "/access-my-wallet"]}>
+          <Route exact path={["/", "/create-new-wallet", "/access-my-wallet", "/transaction-history"]}>
             <PrivateLayout>
               <Route exact path="/">
                 <Home/>
@@ -49,6 +50,9 @@ function RouterOutlet(props) {
               </Route>
               <Route exact path="/access-my-wallet">
                 <AccessWallet/>
+              </Route>
+              <Route exact path="/transaction-history">
+                <TransactionHistory/>
               </Route>
             </PrivateLayout>
           </Route>
