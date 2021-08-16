@@ -9,6 +9,8 @@ import NotFound from '../pages/notFound/NotFound'
 import CreateNewWallet from '../pages/createNewWallet/CreateNewWallet';
 import AccessWallet from '../pages/accessWallet/AccessWallet'
 import TransactionHistory from '../pages/transactionHistory/TransactionHistory';
+import Register from "../pages/auth/Register";
+import Login from "../pages/auth/Login";
 
 const { Header, Content, Footer } = Layout;
 
@@ -56,7 +58,12 @@ function RouterOutlet(props) {
               </Route>
             </PrivateLayout>
           </Route>
-          
+          <Route path="/register">
+            <Register/>
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
           <Route path="*">
             <NotFound/>
           </Route>
