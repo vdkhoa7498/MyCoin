@@ -2,7 +2,10 @@ const Block = require('./block.model');
 
 const actions = require('../constants');
 
-const { generateProof, isProofValid } = require('../utils/proof');
+const {
+  generateProof,
+  isProofValid
+} = require('../utils/proof');
 
 class Blockchain {
   constructor(blocks, io) {
@@ -10,6 +13,7 @@ class Blockchain {
     this.currentTransactions = [];
     this.nodes = [];
     this.io = io;
+    this.users = [];
   }
 
   addNode(node) {
@@ -22,6 +26,39 @@ class Blockchain {
     this.io.emit(actions.END_MINING, this.toArray());
   }
 
+  async register(newUser) {
+    console.log(newUser)
+    console.log("users", this.users)
+    if (!await this.isUserExistingEmail(newUser.email)) {
+      this.io.emit(actions.ADD_USER, newUser);
+      return this.users.push(newUser);
+      //console.log("added new User:" ,newUser);
+    } else {
+      throw new Error("this user is created before");
+    }
+
+  };
+
+  isUserExistingEmail(email) {
+    const index = this.users.findIndex(item => item.email === email);
+    if (index === -1){
+      return false
+    }
+    return true
+  };
+
+  isUserExisting(address) {
+    const index = this.users.findIndex(item => item.address === address);
+    if (index === -1){
+      return false
+    }
+    return true
+  };
+
+  getUserInfo(address) {
+    return this.users.find(item => item.address === address);
+  };
+
   async newTransaction(transaction) {
     this.currentTransactions.push(transaction);
     if (this.currentTransactions.length === 2) {
@@ -29,7 +66,10 @@ class Blockchain {
       const previousBlock = this.lastBlock();
       process.env.BREAK = false;
       const block = new Block(previousBlock.getIndex() + 1, previousBlock.hashValue(), previousBlock.getProof(), this.currentTransactions);
-      const { proof, dontMine } = await generateProof(previousBlock.getProof());
+      const {
+        proof,
+        dontMine
+      } = await generateProof(previousBlock.getProof());
       block.setProof(proof);
       this.currentTransactions = [];
       if (dontMine !== 'true') {
@@ -47,7 +87,9 @@ class Blockchain {
   }
 
   checkValidity() {
-    const { blocks } = this;
+    const {
+      blocks
+    } = this;
     let previousBlock = blocks[0];
     for (let index = 1; index < blocks.length; index++) {
       const currentBlock = blocks[index];

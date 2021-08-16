@@ -20,6 +20,11 @@ const socketListeners = (socket, chain) => {
     }
   });
 
+  socket.on(SocketActions.ADD_USER, (newUser) => {
+    console.log("added new User to our ledger", newUser);
+    chain.register(newUser);
+  });
+
   return socket;
 };
 
