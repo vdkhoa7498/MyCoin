@@ -27,19 +27,13 @@ class Blockchain {
   }
 
   async register(newUser) {
-    if (!await this.isUserExistingEmail(newUser.email)) {
-      this.io.emit("ADD_USER", newUser);
-      return this.users.push(newUser);
-      //console.log("added new User:" ,newUser);
-    } else {
-      throw new Error("this user is created before");
-    }
+    return this.users.push(newUser);
 
   };
 
   isUserExistingEmail(email) {
     const index = this.users.findIndex(item => item.email === email);
-    if (index === -1){
+    if (index === -1) {
       return false
     }
     return true
@@ -47,7 +41,7 @@ class Blockchain {
 
   isUserExisting(address) {
     const index = this.users.findIndex(item => item.address === address);
-    if (index === -1){
+    if (index === -1) {
       return false
     }
     return true

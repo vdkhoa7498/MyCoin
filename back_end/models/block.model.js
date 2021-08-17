@@ -42,7 +42,7 @@ class Block {
       proof,
       timestamp,
       previousBlockHash,
-      transactions: transactions.map(transaction => transaction.getDetails()),
+      transactions: transactions,
     };
   }
 
@@ -51,11 +51,7 @@ class Block {
     this.proof = block.proof;
     this.previousBlockHash = block.previousBlockHash;
     this.timestamp = block.timestamp;
-    this.transactions = block.transactions.map(transaction => {
-      const parsedTransaction = new Transaction();
-      parsedTransaction.parseTransaction(transaction);
-      return parsedTransaction;
-    });
+    this.transactions = block.transactions;
   }
 
   printTransactions() {
