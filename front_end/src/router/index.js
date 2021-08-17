@@ -47,7 +47,7 @@ function RouterOutlet(props) {
                 (isAuthenticated)
                   ? 
                   <SendCoin />
-                  : <Redirect to="/confirmed-projects"/>
+                  : <Redirect to="/"/>
               }
               </Route>
             </PrivateLayout>
