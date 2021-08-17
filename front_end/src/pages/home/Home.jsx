@@ -56,7 +56,7 @@ const Home = () => {
             })
             .catch((err) => { console.log(err) })
 
-    })
+    }, [])
     return (
         <div>
             {isAuthenticated && <Button type="primary" className="button-card"
@@ -65,7 +65,7 @@ const Home = () => {
                     Send Coin
                 </Link>
             </Button>}
-            <Table dataSource={transactions} columns={columns} />
+            <Table rowKey="timestamp" dataSource={transactions} columns={columns} />
         </div>
 
     )

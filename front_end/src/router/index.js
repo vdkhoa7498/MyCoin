@@ -43,12 +43,7 @@ function RouterOutlet(props) {
                 <Home/>
               </Route>
               <Route exact path="/send-coin">
-              {
-                (isAuthenticated)
-                  ? 
-                  <SendCoin />
-                  : <Redirect to="/"/>
-              }
+              <SendCoin />
               </Route>
             </PrivateLayout>
           </Route>
