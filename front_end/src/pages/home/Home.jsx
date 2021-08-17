@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Table, Input } from 'antd'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import './styles.scss'
 import { getTransactions } from '../../services/transaction.service';
 
@@ -60,9 +60,10 @@ const Home = () => {
     return (
         <div>
             {isAuthenticated && <Button type="primary" className="button-card"
-                onClick={() => { history.push("/send-coin") }}
             >
-                Send Coin
+                <Link to="/send-coin">
+                    Send Coin
+                </Link>
             </Button>}
             <Table dataSource={transactions} columns={columns} />
         </div>
