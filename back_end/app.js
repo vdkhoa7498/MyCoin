@@ -1,4 +1,5 @@
 const app = require('express')();
+const cors = require('cors')
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const httpServer = require('http').Server(app);
@@ -22,6 +23,7 @@ console.log(process.env.PORT)
 const blockChain = new BlockChain(null, io);
 
 app.use(bodyParser.json());
+app.use(cors("*"))
 
 app.post("/register", async (req, res) => {
   console.log("register")
@@ -42,8 +44,8 @@ app.post("/register", async (req, res) => {
       email: email,
     }
     
-    this.io.emit("ADD_USER", newUser);
-    res.json(keypair).end();
+    io.emit("ADD_USER", newUser);
+    res.json({email, name, ...keypair}).end();
   }
 
 
@@ -103,11 +105,17 @@ app.post('/transaction', async (req, res) => {
   const {
     sender,
     receiver,
-    amount
+    amount,
+    privateKey
   } = req.body;
   if (!(await blockChain.isUserExisting(sender))) {
     res.status(400).json({
       message: 'Sender is not valid'
+    })
+  }
+  if (ec.keyFromPrivate(privateKey, "hex").getPublic("hex") !== sender) {
+    res.status(400).json({
+      message: 'Private key is not valid'
     })
   }
   if (!(await blockChain.isUserExisting(receiver))) {
@@ -127,7 +135,7 @@ app.get('/transactions', (req, res) => {
   for (let i = 1; i < blocks.length; i++) {
     transactions = [...transactions, ...blocks[i].transactions]
   }
-  res.json(blockChain.toArray()).end();
+  res.json(transactions).end();
 });
 
 
