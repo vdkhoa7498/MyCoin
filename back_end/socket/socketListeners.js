@@ -4,13 +4,13 @@ const Transaction = require('../models/transaction.model');
 const Blockchain = require('../models/chain.model');
 
 const socketListeners = (socket, chain) => {
-  socket.on(SocketActions.ADD_TRANSACTION, (sender, receiver, amount) => {
+  socket.on("ADD_TRANSACTION", (sender, receiver, amount) => {
+    console.log("add transction")
     const transaction = new Transaction(sender, receiver, amount);
     chain.newTransaction(transaction);
-    console.info(`Added transaction: ${JSON.stringify(transaction.getDetails(), null, '\t')}`);
   });
 
-  socket.on(SocketActions.END_MINING, (newChain) => {
+  socket.on("END_MINING", (newChain) => {
     console.log('End Mining encountered');
     process.env.BREAK = true;
     const blockChain = new Blockchain();
@@ -20,9 +20,13 @@ const socketListeners = (socket, chain) => {
     }
   });
 
-  socket.on(SocketActions.ADD_USER, (newUser) => {
+  socket.on("ADD_USER", (newUser) => {
     console.log("added new User to our ledger", newUser);
     chain.register(newUser);
+  });
+
+  socket.on("CHECK", () => {
+    console.log("OKAY");
   });
 
   return socket;

@@ -23,14 +23,12 @@ class Blockchain {
   mineBlock(block) {
     this.blocks.push(block);
     console.log('Mined Successfully');
-    this.io.emit(actions.END_MINING, this.toArray());
+    this.io.emit("END_MINING", this.toArray());
   }
 
   async register(newUser) {
-    console.log(newUser)
-    console.log("users", this.users)
     if (!await this.isUserExistingEmail(newUser.email)) {
-      this.io.emit(actions.ADD_USER, newUser);
+      this.io.emit("ADD_USER", newUser);
       return this.users.push(newUser);
       //console.log("added new User:" ,newUser);
     } else {
@@ -61,6 +59,7 @@ class Blockchain {
 
   async newTransaction(transaction) {
     this.currentTransactions.push(transaction);
+    console.log(this.currentTransactions, "oke")
     if (this.currentTransactions.length === 2) {
       console.info('Starting mining block...');
       const previousBlock = this.lastBlock();

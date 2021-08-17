@@ -71,12 +71,13 @@ app.post('/nodes', (req, res) => {
 
 app.post('/transaction', (req, res) => {
   const { sender, receiver, amount } = req.body;
-  io.emit(SocketActions.ADD_TRANSACTION, sender, receiver, amount);
+  io.emit("ADD_TRANSACTION", sender, receiver, amount);
   res.json({ message: 'transaction success' }).end();
 });
 
 
 app.get('/chain', (req, res) => {
+  io.emit("CHECK")
   res.json(blockChain.toArray()).end();
 });
 
